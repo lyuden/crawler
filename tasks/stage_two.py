@@ -7,6 +7,7 @@ from tasks.utils import add_paginated_url
 from parsers import parser_functions, limit_finder
 import datetime
 import requests
+from pipeline import pipelines
 
 @app.task(name='get_html')
 def get_html(url_id):
@@ -58,6 +59,7 @@ def extract_products_urls(html,source_id):
 @app.task
 def parse_product(html):
 
+    pass
 
 
 

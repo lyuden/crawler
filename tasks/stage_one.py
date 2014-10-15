@@ -3,10 +3,6 @@ from db.models import Sources
 from tasks.utils import add_paginated_url
 from settings import app
 
-
-
-
-
 @app.task(name="form_depth_zero_urls_task")
 def form_depth_zero_urls():
     with session_scope() as session:
