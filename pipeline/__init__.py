@@ -5,12 +5,31 @@ from parsers import parser_modules
 import re
 
 
+def before_get_total_records(html):
+    return html
+
+def after_get_total_records(result):
+    return result
+
+def before_get_links(html):
+    return html
+
+def after_get_links(result):
+    return result
+
+
+def before_get_metadata(html):
+    return html
+
+def after_get_metadata(result):
+    return result
+
 def construct_pipeline(parser_module):
-    return {'total_records': beforeafter(parser_module.before_get_total, parser_module.before_get_total)(
+    return {'total_records': beforeafter(before_get_total_records, after_get_total_records)(
         parser_module.get_total),
-            'links': beforeafter(parser_module.before_get_links, parser_module.after_get_links)(
+            'links': beforeafter(before_get_links, after_get_links)(
                 parser_module.get_links),
-            'metadata': beforeafter(parser_module.before_get_metadata, parser_module.after_get_metadata)(
+            'metadata': beforeafter(before_get_metadata, after_get_metadata)(
                 parser_module.get_metadata)}
 
 pipelines = {}

@@ -9,7 +9,7 @@ class Products(Base):
     url = Column(Text)
     title = Column(String(90))
     description = Column(Text)
-    created_at = Column(DateTime)
+    created_at = Column(DateTime,default=datetime.now)
 
 class Sources(Base):
     __tablename__ = 'sources'
@@ -28,7 +28,7 @@ class Sources(Base):
 class Urls(Base):
     __tablename__ = 'urls'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)2
     source_id = Column(Integer, default=None)
     url = Column(Text)
     depth = Column(Integer)

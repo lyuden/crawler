@@ -2,9 +2,8 @@
 
 from settings import app
 from db.utils import session_scope
-from db.models import Urls,Sources
+from db.models import Urls, Sources, Products
 from tasks.utils import add_paginated_url
-from parsers import parser_functions, limit_finder
 import datetime
 import requests
 from pipeline import pipelines
@@ -38,7 +37,7 @@ def generate_depth_one_processing_tasks():
 @app.taks(name='process_depth_one_task')
 def process_depth_one(html,source_id):
 
-    limit = limit_finder(html)
+    limit = pipelines[source_id]['get_total_records'](html)
 
     with session_scope() as session:
         source = session.query(Sources).filter(Sources.id == source_id).one()
@@ -52,14 +51,18 @@ def process_depth_one(html,source_id):
 @app.task(name="extract_product_urls_task")
 def extract_products_urls(html,source_id):
 
-    for product_url in parser_functions[source_id]:
-
+    for product_url in pipelines[source_id]['get_links']:
+        extract_metadata_subtask = parse_product.s(source_id)
         get_html((product_url,), link = parse_product)
 
-@app.task
-def parse_product(html):
+@app.task(name = 'parse_product_task')
+def parse_product(html, source_id):
 
-    pass
+    with session_scope() as session:
+        product_dict = pipelines[source_id]['metadata'](html)
+        product = Products(**product_dict)
+        session.add(product)
+
 
 
 
