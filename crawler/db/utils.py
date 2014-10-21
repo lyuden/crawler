@@ -1,5 +1,7 @@
 from contextlib import contextmanager
-from db.setup import Session
+1
+from crawler.db.setup import Session
+
 
 @contextmanager
 def session_scope():

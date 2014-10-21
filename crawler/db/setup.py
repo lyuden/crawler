@@ -1,7 +1,9 @@
-from db.models import Base
 from sqlalchemy import create_engine
-from settings import DB_DESCRIPTOR
 from sqlalchemy.orm import sessionmaker
+
+from crawler.db.models import Base
+from crawler.settings import DB_DESCRIPTOR
+
 
 engine = create_engine(DB_DESCRIPTOR)
 

@@ -1,8 +1,7 @@
-from pipeline.deco import beforeafter
-from db.models import Sources
-from db.utils import session_scope
-from parsers import parser_modules
-import re
+from crawler.pipeline.deco import beforeafter
+from crawler.db.models import Sources
+from crawler.db.utils import session_scope
+from crawler.parsers import parser_modules
 
 
 def before_get_total_records(html):
@@ -26,7 +25,7 @@ def after_get_metadata(result):
 
 def construct_pipeline(parser_module):
     return {'total_records': beforeafter(before_get_total_records, after_get_total_records)(
-        parser_module.get_total),
+        parser_module.get_total_records),
             'links': beforeafter(before_get_links, after_get_links)(
                 parser_module.get_links),
             'metadata': beforeafter(before_get_metadata, after_get_metadata)(
@@ -36,8 +35,8 @@ pipelines = {}
 
 with session_scope() as session:
     for parser_module in parser_modules:
-        name = parser_module.__name__.replace('parsers.', '')
-        source = session.query(Sources).filter(Sources.parser == name)
+        name = parser_module.__name__.replace('crawler.parsers.', '')
+        source = session.query(Sources).filter(Sources.parser == name).one()
         pipelines[source.id] = construct_pipeline(parser_module)
 
 
