@@ -13,3 +13,7 @@ Session = sessionmaker(bind=engine)
 def init_db(engine):
 
     Base.metadata.create_all(engine)
+
+1
+if __name__ == "__main__":
+    init_db(engine)

@@ -2,6 +2,8 @@ from crawler.pipeline.deco import beforeafter
 from crawler.db.models import Sources
 from crawler.db.utils import session_scope
 from crawler.parsers import parser_modules
+from sqlalchemy.exc import OperationalError
+from sqlalchemy.orm.exc import NoResultFound
 
 
 def before_get_total_records(html):
@@ -35,9 +37,19 @@ pipelines = {}
 
 with session_scope() as session:
     for parser_module in parser_modules:
-        name = parser_module.__name__.replace('crawler.parsers.', '')
-        source = session.query(Sources).filter(Sources.parser == name).one()
-        pipelines[source.id] = construct_pipeline(parser_module)
+        try:
+            name = parser_module.__name__.replace('crawler.parsers.', '')
+            source = session.query(Sources).filter(Sources.parser == name).one()
+            pipelines[source.id] = construct_pipeline(parser_module)
+
+        except OperationalError:
+
+            print("Error, probably db not initialized. Try python -m crawler.db.setup")
+
+        except NoResultFound:
+
+            print("You db doesn't contain any description of Sources try to add one")
+
 
 
 
