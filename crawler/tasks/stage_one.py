@@ -1,4 +1,4 @@
-from crawler.celeryapp.utils.log import get_task_logger
+from celery.utils.log import get_task_logger
 
 from crawler.db.utils import session_scope
 from crawler.db.models import Sources

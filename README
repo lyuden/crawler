@@ -1,0 +1,53 @@
+You need installed RabbitMQ, virtualenv
+
+Consider Ubuntu
+
+$ sudo apt-get install rabbitmq-server python-virtualenv
+
+
+Then inside working directory clone project
+
+$ git clone https://github.com/lyuden/crawler.git
+
+Create virtual environment
+
+$ virtualenv venv
+
+Activate it
+
+$ source venv/bin/activate
+
+Install python packages
+(venv)$ pip install -r crawler/requirements.txt
+
+go to crawler directory
+
+$ cd crawler.
+
+Initialize SQLIte debug db
+
+$ python -m crawler.db.setup -s
+
+Launch in another terminal window test server
+
+$ python -m crawler.test.server
+
+You can look at it at
+http://localhost:5000/catalog/1
+http://localhost:5000/products/1
+
+Where you can change 1 to any other number
+
+
+Launch worker that will execute tasks and send periodic signals to queue
+
+$ celery worker -B -A crawler.celeryapp
+
+This will generate periodic (periods can be set in crawler/celeryapp.py) tasks that will get and parse pages from test server
+
+
+
+
+
+
+
